@@ -1,0 +1,28 @@
+---
+### test driver script for including_tasks for troubleshooting
+# vars prompt goes here
+- name: Prompt for VM_name or grouping in /etc/ansible/hosts
+  vars_prompt:
+  - name: VM_name
+    prompt: "Virtual machine name or group to apply baseline configs"
+    private: no
+    default: testvm107
+
+  vars:
+    path: /usr/lib/systemd/system/dnf-makecache.timer
+    path2: /etc/dnf/automatic.conf
+    VM: localhost
+ 
+  hosts: "{{ VM_name }}"
+  gather_facts: true
+  become: true
+  tasks:
+
+# includes go here
+  - name: Ensure Zabbix agent is installed
+    include_tasks: zabbix-agent-new.yml
+
+  handlers:
+  - name: restart zabbix-agent
+    service: name=zabbix-agent state=restarted
+ 
