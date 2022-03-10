@@ -1,0 +1,47 @@
+---
+  - name: dnf-automatic block
+    block: 
+      - name: Install dnf-automatic
+        dnf:
+          name: dnf-automatic
+          state: latest
+        notify: Restart dnf-automatic
+
+      - name: Copy default dnf-automatic.conf file
+        copy: 
+          src:  dnf-automatic.conf
+          dest: "{{ path2 }}"   
+        notify: Restart dnf-automatic
+
+      - name: Set correct system_name in dnf-automatic.conf
+        lineinfile:
+          dest: "{{ path2 }}"
+          regexp: "^system_name = kpatch"
+          line:   ""
+          state: present
+
+      - name: Set correct system_name in dnf-automatic.conf
+        lineinfile:
+          dest: "{{ path2 }}"
+          regexp: "^system_name=kpatch"
+          line:   "system_name={{ inventory_hostname }}"
+          state: present
+ 
+      - name: Remove unwanted dnf-automatic services
+        systemd:
+          name: "{{ item }}"
+          state: stopped
+          enabled: no
+        with_items:
+          - 'dnf-automatic-download.timer'
+          - 'dnf-automatic-notifyonly.timer'
+        notify: Restart dnf-automatic
+
+      - name: Make sure dnf-automatic-install is running
+        systemd:
+          name: dnf-automatic-install.timer
+          state: started
+          enabled: yes
+        notify: Restart dnf-automatic
+    when: ansible_os_family == 'RedHat'
+

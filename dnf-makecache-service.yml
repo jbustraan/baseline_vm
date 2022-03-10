@@ -1,0 +1,13 @@
+---
+    - name: DNF makecache settings
+      block:
+      - name: Set default dnf-makecache.timer so it is not too aggressive 
+        copy:
+          src: dnf-makecache.timer.txt
+          dest: "{{ path }}"
+
+      - name: Reload daemon after editing timer config file
+        systemd:
+          daemon_reload: yes
+      when: ansible_os_family == 'RedHat'
+

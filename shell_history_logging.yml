@@ -1,0 +1,19 @@
+---
+### adds CLI history logging to syslog and adds proper date/time stamps to CLI history.  Allows pushing to Graylog or Wazuh
+    - name: Add HISTTIMEFORMAT to /etc/bashrc
+      lineinfile:
+              dest: /etc/bashrc
+              regexp: '^export HISTTIMEFORMAT'
+              line: 'export HISTTIMEFORMAT="%d/%m/%y %T "'
+              state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Add shopt setting to /etc/profile
+      lineinfile:
+              dest: /etc/profile
+              regexp: '^shopt -s'
+              line: 'shopt -s syslog_history'
+              state: present
+      when: ansible_os_family == 'RedHat'
+      notify: restart rsyslog
+

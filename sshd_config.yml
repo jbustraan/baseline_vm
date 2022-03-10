@@ -1,0 +1,26 @@
+---
+    - name: Update SSH configuration to be more secure
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        validate: 'sshd -t -f %s'
+      with_items:
+        - regexp: "^PasswordAuthentication"
+          line:   "PasswordAuthentication no"
+        - regexp: "^PermitRootLogin"
+          line:   "PermitRootLogin no"
+        - regexp: "^PubkeyAuthentication"
+          line:   "PubkeyAuthentication yes"
+        - regexp: "^Ciphers"
+          line:   "Ciphers aes128-ctr,aes192-ctr,aes256-ctr"
+        - regexp: "^HostKeyAlgorithms"
+          line:   "HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa,ssh-dss"
+        - regexp: "^KexAlgorithms"
+          line:   "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256"
+        - regexp: "^MACs"
+          line:   "MACs hmac-sha2-256,hmac-sha2-512,hmac-sha1"
+      notify: restart sshd
+
+

@@ -1,0 +1,47 @@
+---
+  - name: Zabbix client installation
+    block:
+    - name: Ensure firewalld is installed
+      dnf:
+        name: firewalld
+        state: latest
+    - name: Make sure firewalld is started
+      service:
+        name: firewalld
+        enabled: yes
+        state: started
+    - name: Firewalld changes for zabbix agent
+      shell: /usr/bin/firewall-cmd --permanent --add-port=10050/tcp
+      ignore_errors: True
+    - name: Firewalld changes for zabbix agent reload
+      shell: /usr/bin/firewall-cmd --reload
+      ignore_errors: True
+    - name: Install zabbix repo 
+      dnf:
+        name: 'https://repo.zabbix.com/zabbix/5.3/rhel/8/x86_64/zabbix-release-5.3-1.el8.noarch.rpm'
+        disable_gpg_check: yes
+        state: present
+      ignore_errors: True
+    - name: install zabbix agent 5.3
+      dnf: name=zabbix-agent
+    - name: ensure zabbix is running
+      service: name=zabbix-agent state=started enabled=yes
+    - name: Update zabbix_agentd.conf
+      lineinfile:
+        dest: /etc/zabbix/zabbix_agentd.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - regexp: "^# Server="
+          line: "Server=192.168.1.243"
+        - regexp: "^Server=127.0.0.1"
+          line: ""
+        - regexp: "^# Hostname="
+          line: "Hostname={{ VM }}"
+        - regexp: "^Hostname=Zabbix server"
+          line: ""
+        - regexp: "^ServerActive=127.0.0.1"
+          line: "ServerActive="
+      notify: restart zabbix-agent
+    when: ansible_os_family == 'RedHat'
