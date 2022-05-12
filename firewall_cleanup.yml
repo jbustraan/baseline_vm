@@ -1,0 +1,19 @@
+---
+    - name: Ensure firewalld is installed
+      dnf: 
+        name: firewalld
+        state: latest
+
+    - name: Ensure firewalld is running
+      service: 
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Firewalld remove default dhcpv6-client service rule
+      firewalld:
+        service: dhcpv6-client
+        permanent: yes
+        state: disabled
+
+      notify: restart firewalld

@@ -4,9 +4,9 @@
 - name: Prompt for VM_name or grouping in /etc/ansible/hosts
   vars_prompt:
   - name: VM_name
-    prompt: "Virtual machine name or group to apply baseline configs"
+    prompt: "Enter full qualified Virtual machine name or Ansible host group to apply baseline configs"
     private: no
-    default: testvm107
+    default: testvmXX.bustraan.lab
 
   vars:
     path: /usr/lib/systemd/system/dnf-makecache.timer
@@ -32,6 +32,9 @@
   - name: Ensure shell history logging with date and time stamp is enabled
     include_tasks: shell_history_logging.yml
 
+  - name: Ensure firewalld has removed unnecessary services
+    include_tasks: firewall_cleanup.yml
+
   - name: Ensure sshd_config has secure and standard settings
     include_tasks: sshd_config.yml
 
@@ -50,4 +53,7 @@
 
   - name: Restart dnf-automatic
     service: name=dnf-automatic.timer state=restarted
+ 
+  - name: restart firewalld
+    service: name=firewalld state=restarted
  

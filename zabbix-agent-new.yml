@@ -43,5 +43,22 @@
           line: ""
         - regexp: "^ServerActive=127.0.0.1"
           line: "ServerActive="
+    - name: Add PSK support to Zabbix agent config
+      lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - line: "TLSConnect=psk"
+        - line: "TLSAccept=psk"
+        - line: "TLSPSKFile=/etc/zabbix/zabbix_agentd.psk"
+        - line: "TLSPSKIdentity=psk_homelab"
+    - name: Copy file to "{{ inventory_hostname }}"
+      copy:
+        src: zabbix_agentd.psk
+        dest: /etc/zabbix/zabbix_agentd.psk
+        owner: root
+        group: zabbix
+        mode:  0644
       notify: restart zabbix-agent
     when: ansible_os_family == 'RedHat'
