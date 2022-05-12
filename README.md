@@ -1,9 +1,7 @@
-# baseline_vm
-Baseline set of Ansible scripts run on newly provisioned virtual machines
+## baseline_vm
+A baseline set of Ansible scripts run on newly provisioned virtual machines
 
-### CLI syntax...   (Note - you will need to provide VM name or VM group from /etc/ansible/hosts)
-Note: VM name or VM group needs to exist in /etc/ansible/hosts
-
+**Note**: VM name or VM group needs to exist in /etc/ansible/hosts
 1. Ensure dnf makecache service runs 1x daily
 2. Ensure dnf updates are automatically applied
 3. Ensure new motd banner is set
@@ -13,9 +11,7 @@ Note: VM name or VM group needs to exist in /etc/ansible/hosts
 7. Restart sshd, rsyslog, zabbix-agent, dnf-automatic
 
 ### Run instructions
-#### to run script enter
-ansible-playbook main.yml
-
-#### Enter vm name or group at the prompt
-VM prompt enter the vm.bustraan.lab (FQDN)
-
+ ```
+ $ ansible-playbook main.yml
+Enter Virtual machine name (FQDN) or group: [testvmXX.bustraan.lab]:
+```

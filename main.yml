@@ -4,7 +4,7 @@
 - name: Prompt for VM_name or grouping in /etc/ansible/hosts
   vars_prompt:
   - name: VM_name
-    prompt: "Enter full qualified Virtual machine name or Ansible host group to apply baseline configs"
+    prompt: "Enter Virtual machine name (FQDN) or group:"
     private: no
     default: testvmXX.bustraan.lab
 
