@@ -1,13 +1,13 @@
 ---
 ### run all ansible scripts on new VMs to ensure baseline software is installed
-  hosts: "{{ VM_name }}"
-  gather_facts: true
-  become: true
-  vars:
+- vars:
     path: /usr/lib/systemd/system/dnf-makecache.timer
     path2: /etc/dnf/automatic.conf
     VM: localhost
-    VM_name: testers
+    VM_name: ansible.bustraan.lab
+  hosts: "{{ VM_name }}"
+  gather_facts: true
+  become: true
 
   tasks:
 # includes go here
