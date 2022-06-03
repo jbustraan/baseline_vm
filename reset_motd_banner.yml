@@ -1,20 +1,8 @@
 ---
 ### playbook to reset /etc/motd using figlet after dnf-automatic has pushed automatic updates to MOTD banner
-    - name: Create new banner with figlet on localhost
-      shell: figlet `echo "{{ inventory_hostname }}"|cut -d'.' -f1` > temp/motd-{{ inventory_hostname }}; echo -e "\n  Have a nice day...\n" >> temp/motd-{{ inventory_hostname }}
-      delegate_to: localhost
+
+    - name: Create new banner without figlet on localhost
+      shell: echo -e "\n----------------------------------------\n    {{ inventory_hostname }}\n\n    Have a nice day...\\n----------------------------------------\n" > /etc/motd
       when: inventory_hostname != 'raptor.bustraan.lab'
 
-    - name: Copy file to "{{ inventory_hostname }}" 
-      copy:
-        src: temp/motd-{{ inventory_hostname }}
-        dest: /etc/motd
-        owner: root 
-        group: root 
-        mode:  0644
-      when: inventory_hostname != 'raptor.bustraan.lab'
-
-    - name: Copy custom banner from /root/motd.raptor if inventory_hostname == raptor
-      shell: cp /root/motd.raptor /etc/motd
-      when: inventory_hostname == 'raptor.bustraan.lab'
 
