@@ -4,7 +4,7 @@
     path: /usr/lib/systemd/system/dnf-makecache.timer
     path2: /etc/dnf/automatic.conf
     VM: localhost
-    VM_name: ansible.bustraan.lab
+    VM_name: testers 
   hosts: "{{ VM_name }}"
   gather_facts: true
   become: true
