@@ -63,12 +63,12 @@
       replace:
          path: /etc/zabbix/zabbix_agentd.conf
          regexp: "^# Server="
-         replace: "Server=192.168.1.237"
+         replace: "Server=192.168.4.237"
 
     - name: Remove old Server property 
       replace:
          path: /etc/zabbix/zabbix_agentd.conf
-         regexp: "Server=192.168.1.243"
+         regexp: "Server=192.168.4.243"
          replace: ""
 
     - name: Copy file to "{{ ansible_fqdn }}"
@@ -78,5 +78,6 @@
         owner: root
         group: zabbix
         mode:  0644
+        remote_src: no
       notify: restart zabbix-agent
     when: ansible_os_family == 'RedHat'
